@@ -37,11 +37,14 @@ class Sender():
         :return: 测试结果
         """
         try:
-            response = requests.get(TEST_URL, proxies={
-                'http': 'http://' + proxy,
-                'https': 'https://' + proxy
-            }, timeout=TEST_TIMEOUT)
-            if response.status_code == 200:
+            response = requests.get(TEST_URL,
+                #proxies={
+                #    'http': 'http://' + proxy,
+                #    'https': 'https://' + proxy
+                #    },
+                #timeout=TEST_TIMEOUT
+                )
+            if response.status_code < 400:
                 return True
         except (ConnectionError, ReadTimeout):
             return False
@@ -64,7 +67,16 @@ class Sender():
         self.redis = RedisClient()
         if self.redis.set(CLIENT_NAME, proxy):
             print('Successfully Set Proxy', proxy)
+    def write_conf(self,ip):
+        f=open(FILE_NAME,'r+')
+        lines=f.readlines()
+        lines[11]='        server_name  {};\n'.format(ip)
+        f=open(FILE_NAME,'w+')
+        f.writelines(lines)
+        f.close()
 
+
+        
     def adsl(self):
         """
         拨号主进程
@@ -80,10 +92,17 @@ class Sender():
                 if ip:
                     print('Now IP', ip)
                     print('Testing Proxy, Please Wait')
-                    proxy = '{ip}:{port}'.format(ip=ip, port=PROXY_PORT)
+                    proxy = '{ip}'.format(ip=ip)
+                    self.set_proxy(proxy)
+                    self.write_conf(ip)
+                    (status, output) = subprocess.getstatusoutput(CONF_BASH)
+                    if status == 0:
+                        print('CONF Changed and Reloaded!')
+                    else:
+                        continue
                     if self.test_proxy(proxy):
                         print('Valid Proxy')
-                        self.set_proxy(proxy)
+                        #self.set_proxy(proxy)
                         print('Sleeping')
                         time.sleep(ADSL_CYCLE)
                     else:

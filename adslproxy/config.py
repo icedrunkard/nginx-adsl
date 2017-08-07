@@ -8,6 +8,12 @@ ADSL_ERROR_CYCLE = 5
 # ADSL命令
 ADSL_BASH = 'adsl-stop;adsl-start'
 
+#CONF_BASH
+CONF_BASH = '/opt/nginx-1.7.8/sbin -s reload'
+
+#FILE_NAME
+FILE_NAME = '/opt/nginx-1.7.8/conf/nginx.conf'
+
 # 代理运行端口
 PROXY_PORT = 8888
 
@@ -21,7 +27,7 @@ ADSL_IFNAME = 'ppp0'
 REDIS_HOST = 'localhost'
 
 # Redis数据库密码, 如无则填None
-REDIS_PASSWORD = 'foobared'
+REDIS_PASSWORD = 'try_123as_pass'
 
 # Redis数据库端口
 REDIS_PORT = 6379
@@ -30,7 +36,7 @@ REDIS_PORT = 6379
 PROXY_KEY = 'adsl'
 
 # 测试URL
-TEST_URL = 'http://www.baidu.com'
+TEST_URL = 'https://www.google.com'
 
 # 测试超时时间
 TEST_TIMEOUT = 20
